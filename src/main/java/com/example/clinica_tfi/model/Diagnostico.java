@@ -27,8 +27,21 @@ public class Diagnostico {
     @JoinColumn(name = "diagnostico_id")  // Llave foránea en Evolucion
     private List<Evolucion> evoluciones = new ArrayList<>();
 
-    // Getters y setters
-    public void agregarEvolucion(Evolucion evolucion) {
-        evoluciones.add(evolucion);
+    public void agregarEvolucion(String informe, Medico medico) {
+        // Crear la evolución
+        Evolucion evolucion = new Evolucion();
+        evolucion.setTextoLibre(informe);
+        evolucion.setMedico(medico);
+
+        // Agregar la evolución a la lista
+        this.evoluciones.add(evolucion);
+
+        // Establecer la relación inversa
+        evolucion.setDiagnostico(this);
     }
+
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.clinica_tfi.controller;
 
+import com.example.clinica_tfi.model.Diagnostico;
 import com.example.clinica_tfi.model.HistoriaClinica;
 import com.example.clinica_tfi.model.Paciente;
 import com.example.clinica_tfi.service.PacienteService;
@@ -38,6 +39,19 @@ public class PacienteController {
     public ResponseEntity<Void> agregarHistoriaClinica(@PathVariable String dni, @RequestBody HistoriaClinica historiaClinica) {
         pacienteService.agregarHistoriaClinica(dni, historiaClinica);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{dni}/diagnosticos")
+    public ResponseEntity<Void> asociarDiagnostico(
+            @PathVariable String dni,
+            @RequestBody Diagnostico diagnostico) {
+        pacienteService.agregarDiagnostico(dni, diagnostico);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{dni}/diagnosticos")
+    public List<Diagnostico> obtenerDiagnosticos(@PathVariable String dni) {
+        return pacienteService.obtenerDiagnosticosDePaciente(dni);
     }
 
     @GetMapping

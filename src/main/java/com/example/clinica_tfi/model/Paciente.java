@@ -38,12 +38,18 @@ public class Paciente{
         }
 
 
-        public void agregarEvolucion(String nombreDiagnostico, Evolucion evolucion) {
+        public void agregarEvolucion(Long idDiagnostico, String informe, Medico medico) {
+                // Verificar que el paciente tenga una historia clínica
                 if (this.historiaClinica == null) {
                         throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
                 }
-                Diagnostico diagnostico = this.historiaClinica.getDiagnosticoPorNombre(nombreDiagnostico);
-                diagnostico.agregarEvolucion(evolucion);
+
+                // Delegar en HistoriaClinica la lógica de agregar evolución
+                this.historiaClinica.agregarEvolucion(idDiagnostico, informe, medico);
         }
+
+
+
+
 
 }

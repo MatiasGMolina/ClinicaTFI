@@ -20,14 +20,37 @@ public class HistoriaClinica{
     @JoinColumn(name = "historia_clinica_id")  // Llave foránea en Diagnostico
     private List<Diagnostico> diagnosticos = new ArrayList<>();
 
-    // Getters y setters
     public void agregarDiagnostico(Diagnostico diagnostico) {
-        diagnosticos.add(diagnostico);
+        this.diagnosticos.add(diagnostico);
+        diagnostico.setHistoriaClinica(this); // Establecer relación inversa
     }
-    public Diagnostico getDiagnosticoPorNombre(String nombre) {
-        return diagnosticos.stream()
-                .filter(diagnostico -> diagnostico.getNombre().equals(nombre))
+
+    public Diagnostico getDiagnosticoPorNombre(String nombreDiagnostico) {
+        return this.diagnosticos.stream()
+                .filter(d -> d.getNombre().equalsIgnoreCase(nombreDiagnostico))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Diagnóstico no encontrado: " + nombre));
+                .orElseThrow(() -> new RuntimeException("Diagnóstico con el nombre '" + nombreDiagnostico + "' no encontrado"));
     }
+
+
+
+
+
+    public void agregarEvolucion(Long idDiagnostico, String informe, Medico medico) {
+        if (idDiagnostico == null) {
+            throw new RuntimeException("El ID del diagnóstico no puede ser null.");
+        }
+        // Buscar el diagnóstico por ID
+        Diagnostico diagnostico = this.diagnosticos.stream()
+                .filter(d -> d.getId().equals(idDiagnostico))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Diagnóstico no encontrado"));
+
+        // Delegar al diagnóstico la lógica de agregar evolución
+        diagnostico.agregarEvolucion(informe, medico);
+    }
+
+
+
+
 }

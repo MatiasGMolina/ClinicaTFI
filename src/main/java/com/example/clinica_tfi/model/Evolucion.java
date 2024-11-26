@@ -27,6 +27,16 @@ public class Evolucion {
     @JoinColumn(name = "medico_id")
     private Medico medico;
 
+    public Evolucion(String textoLibre, Medico medico) {
+        this.textoLibre = textoLibre;
+        this.medico = medico;
+    }
+    // Constructor adicional si es necesario
+    public Evolucion(String textoLibre, String fechaHora, Medico medico) {
+        this.textoLibre = textoLibre;
+        this.fechaHora = fechaHora;
+        this.medico = medico;
+    }
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "evolucion_id")
     private List<RecetaDigital> recetasDigitales = new ArrayList<>();

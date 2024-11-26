@@ -35,38 +35,36 @@ public class PacienteService {
     }
 
     public void agregarDiagnostico(String dni, Diagnostico diagnostico) {
+        if (diagnostico.getId() == null) {
+            throw new RuntimeException("El diagnóstico no tiene un ID asignado.");
+        }
+
         Paciente paciente = repositorioPaciente.buscarPacientePorDni(dni)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
         paciente.agregarDiagnostico(diagnostico);
     }
-
-    public void agregarEvolucion(String dni, String nombreDiagnostico, Evolucion evolucion, String matriculaMedico) {
-        // Buscar el paciente por DNI
+    public List<Diagnostico> obtenerDiagnosticosDePaciente(String dni) {
         Paciente paciente = repositorioPaciente.buscarPacientePorDni(dni)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
-        // Obtener el diagnóstico por nombre dentro de la historia clínica del paciente
-        Diagnostico diagnostico = paciente.getHistoriaClinica().getDiagnosticoPorNombre(nombreDiagnostico);
-        if (diagnostico == null) {
-            throw new RuntimeException("Diagnóstico no encontrado en la historia clínica del paciente");
+        if (paciente.getHistoriaClinica() == null) {
+            throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
         }
 
-
-        // Buscar el médico por matrícula
-        Optional<Medico> optionalMedico = medicoService.buscarMedicoPorMatricula(matriculaMedico);
-        Medico medico = optionalMedico.orElseThrow(() -> new RuntimeException("Médico no encontrado con matrícula: " + matriculaMedico));
-
-        // Asignar el médico y el diagnóstico a la evolución
-        evolucion.setDiagnostico(diagnostico);
-        evolucion.setMedico(medico);
-
-        // Agregar la evolución al diagnóstico
-        diagnostico.agregarEvolucion(evolucion);
-
+        return paciente.getHistoriaClinica().getDiagnosticos();
     }
 
 
+    public void agregarEvolucion(Paciente paciente, Long idDiagnostico, String informe, Medico medico) {
+        // Verificar que el paciente tenga una historia clínica
+        if (paciente.getHistoriaClinica() == null) {
+            throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
+        }
 
+        // Delegar en HistoriaClinica para agregar la evolución
+        paciente.getHistoriaClinica().agregarEvolucion(idDiagnostico, informe, medico);
+
+    }
     public List<Paciente> obtenerTodosLosPacientes() {
         return repositorioPaciente.obtenerTodos();
     }
