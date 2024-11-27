@@ -1,12 +1,9 @@
 package com.example.clinica_tfi.service;
 
 import com.example.clinica_tfi.model.*;
-
-
 import com.example.clinica_tfi.repository.RepositorioPaciente;
 import org.springframework.stereotype.Service;
 import com.example.clinica_tfi.service.MedicoService;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +40,7 @@ public class PacienteService {
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
         paciente.agregarDiagnostico(diagnostico);
     }
+
     public List<Diagnostico> obtenerDiagnosticosDePaciente(String dni) {
         Paciente paciente = repositorioPaciente.buscarPacientePorDni(dni)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
@@ -54,17 +52,6 @@ public class PacienteService {
         return paciente.getHistoriaClinica().getDiagnosticos();
     }
 
-
-    public void agregarEvolucion(Paciente paciente, Long idDiagnostico, String informe, Medico medico) {
-        // Verificar que el paciente tenga una historia clínica
-        if (paciente.getHistoriaClinica() == null) {
-            throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
-        }
-
-        // Delegar en HistoriaClinica para agregar la evolución
-        paciente.getHistoriaClinica().agregarEvolucion(idDiagnostico, informe, medico);
-
-    }
     public List<Paciente> obtenerTodosLosPacientes() {
         return repositorioPaciente.obtenerTodos();
     }

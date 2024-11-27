@@ -1,58 +1,54 @@
 package com.example.clinica_tfi.model;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.ArrayList;
 import java.util.List;
+
 @Getter @Setter
-@Entity
 @NoArgsConstructor
 public class Evolucion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private static long idCounter = 1L; // Contador estático
     private Long id;
-
     private String fechaHora;
     private String textoLibre;
-
+    private Medico medico;
+    private RecetaDigital recetaDigital;
+    private PedidoLaboratorio pedidoLaboratorio;
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "diagnostico_id")  // Llave foránea en Evolucion
     private Diagnostico diagnostico;
 
-    @ManyToOne
-    @JoinColumn(name = "medico_id")
-    private Medico medico;
-
-    public Evolucion(String textoLibre, Medico medico) {
+    public Evolucion(String textoLibre, Medico medico, Diagnostico diagnostico) {
         this.textoLibre = textoLibre;
         this.medico = medico;
-    }
-    // Constructor adicional si es necesario
-    public Evolucion(String textoLibre, String fechaHora, Medico medico) {
-        this.textoLibre = textoLibre;
-        this.fechaHora = fechaHora;
-        this.medico = medico;
-    }
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "evolucion_id")
-    private List<RecetaDigital> recetasDigitales = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "evolucion_id")
-    private List<PedidoLaboratorio> pedidosLaboratorio = new ArrayList<>();
-
-    // Métodos para agregar
-    public void agregarReceta(RecetaDigital receta) {
-        this.recetasDigitales.add(receta);
+        this.diagnostico = diagnostico;
+        this.id = idCounter++;
     }
 
-    public void agregarPedidoLaboratorio(PedidoLaboratorio pedido) {
-        this.pedidosLaboratorio.add(pedido);
+    public void agregarRecetaDigital(List<Medicamento> medicamentos, String observaciones) {
+
+        if (this.recetaDigital != null) {
+            throw new RuntimeException("Esta evolución ya tiene una receta digital asociada.");
+        }
+
+        // Crear y asociar la receta digital
+        RecetaDigital recetaDigital = new RecetaDigital();
+        recetaDigital.setMedicamentos(medicamentos);
+        recetaDigital.setObservaciones(observaciones);
+
+        this.recetaDigital = recetaDigital;
     }
 
-    // Getters y setters
+    public void agregarPedidoLaboratorio(String nombreEstudio, String observaciones) {
+        if (this.pedidoLaboratorio != null) {
+            throw new RuntimeException("Esta evolución ya tiene un pedido de laboratorio asociado.");
+        }
+
+        // Crear y asociar el pedido de laboratorio
+        PedidoLaboratorio pedidoLaboratorio = new PedidoLaboratorio();
+        pedidoLaboratorio.setNombreEstudio(nombreEstudio);
+        pedidoLaboratorio.setObservaciones(observaciones);
+
+        this.pedidoLaboratorio = pedidoLaboratorio;
+    }
 }

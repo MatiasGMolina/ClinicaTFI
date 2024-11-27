@@ -1,9 +1,7 @@
 package com.example.clinica_tfi.service;
-
 import com.example.clinica_tfi.model.Medico;
 import com.example.clinica_tfi.repository.RepositorioMedico;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +22,5 @@ public class MedicoService {
     public List<Medico> listarTodosLosMedicos() {
         return repositorioMedico.listarTodos();
     }
-
 }
 

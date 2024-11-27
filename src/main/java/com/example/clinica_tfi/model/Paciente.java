@@ -1,34 +1,29 @@
 package com.example.clinica_tfi.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import java.util.List;
 
 @Getter @Setter
-@Entity
 @NoArgsConstructor
 public class Paciente{
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-
         private String dni;
         private String nombre;
         private String apellido;
         private String email;
         private String telefono;
-
-        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-        @JoinColumn(name = "historia_clinica_id")
         private HistoriaClinica historiaClinica;
 
+        public void validarHistoriaClinica() {
+                if (this.historiaClinica == null) {
+                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
+                }
+        }
 
         public void agregarHistoriaClinica(HistoriaClinica historiaClinica) {
                 this.historiaClinica = historiaClinica;
         }
-
 
         public void agregarDiagnostico(Diagnostico diagnostico) {
                 if (this.historiaClinica == null) {
@@ -37,19 +32,25 @@ public class Paciente{
                 this.historiaClinica.agregarDiagnostico(diagnostico);
         }
 
-
         public void agregarEvolucion(Long idDiagnostico, String informe, Medico medico) {
-                // Verificar que el paciente tenga una historia clínica
-                if (this.historiaClinica == null) {
-                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
-                }
 
                 // Delegar en HistoriaClinica la lógica de agregar evolución
                 this.historiaClinica.agregarEvolucion(idDiagnostico, informe, medico);
         }
 
+        public void agregarRecetaDigital(Long idEvolucion, Long idDiagnostico, List<Medicamento> medicamentos, String observaciones) {
+                if (this.historiaClinica == null) {
+                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
+                }
+                // Delegar a HistoriaClinica
+                this.historiaClinica.agregarRecetaDigital(idEvolucion, idDiagnostico, medicamentos, observaciones);
+        }
 
-
-
-
+        public void agregarPedidoLaboratorio(Long idEvolucion, Long idDiagnostico, String nombreEstudio, String observaciones) {
+                if (this.historiaClinica == null) {
+                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
+                }
+                // Delegar a HistoriaClinica
+                this.historiaClinica.agregarPedidoLaboratorio(idEvolucion, idDiagnostico, nombreEstudio, observaciones);
+        }
 }

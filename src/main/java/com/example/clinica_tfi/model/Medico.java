@@ -1,22 +1,18 @@
 package com.example.clinica_tfi.model;
-
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
-@Getter @Setter
-@Entity
-public class Medico {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+@Getter @Setter
+public class Medico {
+    private Long id;
     private String nombre;
     private String matricula;
     private String especialidad;
 
-    @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Evolucion> evoluciones = new ArrayList<>();
 
     @Override
@@ -27,7 +23,4 @@ public class Medico {
                 ", especialidad='" + especialidad + '\'' +
                 '}';
     }
-
-
-    // Getters y setters
 }

@@ -18,4 +18,3 @@ public class DiagnosticoService {
         System.out.println("Diagnóstico guardado: " + diagnostico);
     }
 }
-

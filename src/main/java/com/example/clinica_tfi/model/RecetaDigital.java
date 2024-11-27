@@ -1,68 +1,11 @@
 package com.example.clinica_tfi.model;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;import java.util.ArrayList;
 
-import jakarta.persistence.*;
-
-@Entity
-public class RecetaDigital {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter @Setter
+public class RecetaDigital{
     private Long id;
-
-    private String fecha;
-    private String codigoBarras;
-    private String firmaDigital;
-    private String medicamento;
-
-    @ManyToOne
-    @JoinColumn(name = "evolucion_id") // Llave foránea
-    private Evolucion evolucion;
-
-    // Getters y setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getCodigoBarras() {
-        return codigoBarras;
-    }
-
-    public void setCodigoBarras(String codigoBarras) {
-        this.codigoBarras = codigoBarras;
-    }
-
-    public String getFirmaDigital() {
-        return firmaDigital;
-    }
-
-    public void setFirmaDigital(String firmaDigital) {
-        this.firmaDigital = firmaDigital;
-    }
-
-    public String getMedicamento() {
-        return medicamento;
-    }
-
-    public void setMedicamento(String medicamento) {
-        this.medicamento = medicamento;
-    }
-
-    public Evolucion getEvolucion() {
-        return evolucion;
-    }
-
-    public void setEvolucion(Evolucion evolucion) {
-        this.evolucion = evolucion;
-    }
+    private List<Medicamento> medicamentos;
+    private String observaciones;
 }

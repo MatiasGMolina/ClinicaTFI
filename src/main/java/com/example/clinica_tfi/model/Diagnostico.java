@@ -1,47 +1,49 @@
 package com.example.clinica_tfi.model;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+
 @Getter @Setter
-@Entity
 @NoArgsConstructor
 public class Diagnostico {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
     private String observaciones;
-
+    private List<Evolucion> evoluciones = new ArrayList<>();
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "historia_clinica_id")  // Llave foránea en Diagnostico
     private HistoriaClinica historiaClinica;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "diagnostico_id")  // Llave foránea en Evolucion
-    private List<Evolucion> evoluciones = new ArrayList<>();
-
     public void agregarEvolucion(String informe, Medico medico) {
-        // Crear la evolución
-        Evolucion evolucion = new Evolucion();
-        evolucion.setTextoLibre(informe);
-        evolucion.setMedico(medico);
 
-        // Agregar la evolución a la lista
+        Evolucion evolucion = new Evolucion(informe, medico,this);
+
         this.evoluciones.add(evolucion);
 
-        // Establecer la relación inversa
-        evolucion.setDiagnostico(this);
+
     }
 
+    public void agregarRecetaDigital(Long idEvolucion, List<Medicamento> medicamentos, String observaciones) {
+        // Buscar la evolución por ID
+        Evolucion evolucion = this.evoluciones.stream()
+                .filter(e -> e.getId().equals(idEvolucion))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Evolución no encontrada"));
 
+        // Delegar a la evolución
+        evolucion.agregarRecetaDigital(medicamentos, observaciones);
+    }
 
+    public void agregarPedidoLaboratorio(Long idEvolucion, String nombreEstudio, String observaciones) {
+        // Buscar la evolución por ID
+        Evolucion evolucion = this.evoluciones.stream()
+                .filter(e -> e.getId().equals(idEvolucion))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Evolución no encontrada"));
 
-
+        // Delegar a la evolución
+        evolucion.agregarPedidoLaboratorio(nombreEstudio, observaciones);
+    }
 }
