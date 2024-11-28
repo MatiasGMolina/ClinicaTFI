@@ -44,6 +44,7 @@ public class ClinicaService {
         List<Medicamento> medicamentos = codigosMedicamentos.stream()
                 .map(codigo -> saludApiClient.obtenerMedicamentoPorCodigo(codigo))
                 .collect(Collectors.toList());
+        paciente.validarHistoriaClinica();
         // Delegar la creación de la receta digital al paciente
         paciente.agregarRecetaDigital(idEvolucion, idDiagnostico, medicamentos, observaciones);
     }
@@ -52,7 +53,7 @@ public class ClinicaService {
         // Buscar al paciente
         Paciente paciente = repositorioPaciente.buscarPacientePorDni(dniPaciente)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
-
+        paciente.validarHistoriaClinica();
         // Delegar la creación del pedido de laboratorio al paciente
         paciente.agregarPedidoLaboratorio(idEvolucion,idDiagnositico, nombreEstudio, observaciones);
     }

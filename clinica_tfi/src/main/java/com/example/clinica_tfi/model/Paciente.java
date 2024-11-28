@@ -33,23 +33,16 @@ public class Paciente{
         }
 
         public void agregarEvolucion(Long idDiagnostico, String informe, Medico medico) {
-
                 // Delegar en HistoriaClinica la lógica de agregar evolución
                 this.historiaClinica.agregarEvolucion(idDiagnostico, informe, medico);
         }
 
         public void agregarRecetaDigital(Long idEvolucion, Long idDiagnostico, List<Medicamento> medicamentos, String observaciones) {
-                if (this.historiaClinica == null) {
-                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
-                }
                 // Delegar a HistoriaClinica
                 this.historiaClinica.agregarRecetaDigital(idEvolucion, idDiagnostico, medicamentos, observaciones);
         }
 
         public void agregarPedidoLaboratorio(Long idEvolucion, Long idDiagnostico, String nombreEstudio, String observaciones) {
-                if (this.historiaClinica == null) {
-                        throw new RuntimeException("El paciente no tiene una historia clínica asociada.");
-                }
                 // Delegar a HistoriaClinica
                 this.historiaClinica.agregarPedidoLaboratorio(idEvolucion, idDiagnostico, nombreEstudio, observaciones);
         }
